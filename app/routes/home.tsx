@@ -8,7 +8,8 @@ export function meta({}: Route.MetaArgs) {
     { title: "Voyd Programming Language" },
     {
       name: "description",
-      content: "Voyd is a high performance WebAssembly language for full stack web development.",
+      content:
+        "Voyd is a high performance WebAssembly language for full stack web development.",
     },
   ];
 }
@@ -19,7 +20,8 @@ export default function Home() {
       <img src={logo} alt="Voyd logo" className="w-40 h-40 mx-auto" />
       <h1 className="text-4xl font-bold">Voyd</h1>
       <p className="max-w-xl text-lg">
-        Voyd is a black hole themed, high performance WebAssembly language focused on full stack web development.
+        A high performance WebAssembly programming language with a focus on full
+        stack web development.
       </p>
       <div className="flex gap-4">
         <a
