@@ -17,7 +17,8 @@ pub fn main()
 
 Voyd is in it's very early stages of development. Voyd is not ready for production use. Some syntax and semantics are still subject to change. Expect frequent breaking changes.
 
-All features documented in README Overview are fully implemented unless otherwise stated. Features documented in the [reference](./reference/) are not yet marked with status and may not be implemented.
+Not all features are implemented. See tests in the github repo for the most
+up to date information on what features have been implemented.
 
 **Features**:
 
@@ -36,7 +37,7 @@ All features documented in README Overview are fully implemented unless otherwis
 - Balance a great developer experience with performance
 - Play nice with others
 
-# Getting Started
+## Getting Started
 
 **Install**
 
@@ -128,8 +129,6 @@ Voyd also supports uniform function call syntax (UFCS), allowing functions to be
 ```
 
 ### Labeled arguments
-
-> Status: Not yet implemented
 
 Labeled arguments can be defined by wrapping parameters you wish to be labeled
 on call in curly braces.
@@ -377,8 +376,6 @@ fn do_work(o: Object)
 
 ## Closures
 
-> Status: Not yet implemented
-
 ```rust
 let double = n => n * 2
 
@@ -386,6 +383,8 @@ array.map n => n * 2
 ```
 
 Voyd also supports a concise syntax for passing closures to labeled arguments:
+
+> status: not yet implemented
 
 ```rust
 try do():
@@ -409,7 +408,7 @@ squared(x)
 
 ## Generics
 
-> Status: Basic implementation complete for objects, functions, impls, and type aliases. Inference is not yet supported.
+> Status: Mostly complete. Constraints not yet implemented.
 
 ```rust
 fn add<T>(a: T, b: T) -> T

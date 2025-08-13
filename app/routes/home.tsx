@@ -1,5 +1,6 @@
 import type { Route } from "./+types/home";
 import logo from "../../assets/logo.svg";
+import CodeBlock from "../components/CodeBlock";
 
 export const prerender = true;
 
@@ -15,11 +16,22 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const fib = `fn fib(n: i32) -> i32
+  if n < 2 then:
+    n
+  else:
+    fib(n - 1) + fib(n - 2)`;
+
   return (
-    <main className="flex flex-col items-center justify-center text-center gap-6 py-24 px-4">
-      <img src={logo} alt="Voyd logo" className="w-40 h-40 mx-auto" />
-      <h1 className="text-4xl font-bold">Voyd</h1>
-      <p className="max-w-xl text-lg">
+    <main className="flex flex-col items-center gap-8 py-24 px-4">
+      <div className="flex flex-col lg:flex-row items-center gap-8">
+        <img src={logo} alt="Voyd logo" className="w-40 h-40" />
+        <div className="w-full max-w-sm">
+          <CodeBlock code={fib} />
+        </div>
+      </div>
+      <h1 className="text-4xl font-bold text-center">Voyd</h1>
+      <p className="max-w-xl text-lg text-center">
         A high performance WebAssembly programming language with a focus on full
         stack web development.
       </p>
