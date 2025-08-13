@@ -58,7 +58,7 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <button
         onClick={copy}
-        className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-gray-700 hover:bg-gray-600 over"
+        className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-[#21262d] text-[#c9d1d9] hover:bg-[#30363d]"
       >
         Copy
       </button>

@@ -34,17 +34,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <header className="bg-black/80 text-gray-100 backdrop-blur-sm">
+        <header className="bg-[#161b22]/80 text-[#c9d1d9] backdrop-blur-sm">
           <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
             <a href="/" className="flex items-center gap-2 font-bold text-xl">
               <img src={logo} alt="Voyd logo" className="h-8 w-8" />
               <span>Voyd</span>
             </a>
             <nav className="flex gap-4">
-              <a href="/docs" className="hover:underline">Docs</a>
+              <a href="/docs" className="hover:underline text-[#58a6ff]">
+                Docs
+              </a>
               <a
                 href="https://github.com/voyd-lang/voyd"
-                className="hover:underline"
+                className="hover:underline text-[#58a6ff]"
                 target="_blank"
                 rel="noopener noreferrer"
               >

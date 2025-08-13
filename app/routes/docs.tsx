@@ -5,7 +5,7 @@ import rehypeSlug from "rehype-slug";
 import readme from "../../docs/README.md?raw";
 import basics from "../../docs/basics.md?raw";
 import CodeBlock from "../components/CodeBlock";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 export const prerender = true;
 
@@ -34,13 +34,22 @@ export default function Docs() {
     return out;
   }, []);
 
-  const [active, setActive] = useState<string>("");
+  const navRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActive(entry.target.id);
+            const id = entry.target.id;
+            const nav = navRef.current;
+            if (!nav) return;
+            nav.querySelectorAll("a").forEach((a) => {
+              if (a.getAttribute("href") === `#${id}`) {
+                a.classList.add("text-[#58a6ff]", "font-medium");
+              } else {
+                a.classList.remove("text-[#58a6ff]", "font-medium");
+              }
+            });
           }
         });
       },
@@ -74,14 +83,12 @@ export default function Docs() {
   return (
     <main className="flex w-full max-w-6xl mx-auto py-16 px-4 gap-8">
       <aside className="hidden md:block w-64 flex-shrink-0 sticky top-20 h-max">
-        <nav className="space-y-2 text-sm">
+        <nav ref={navRef} className="space-y-2 text-sm">
           {headings.map((h) => (
             <a
               key={h.id}
               href={`#${h.id}`}
-              className={`block hover:underline ${h.level === 3 ? "ml-4" : ""} ${
-                active === h.id ? "text-indigo-600 font-medium" : "text-gray-400"
-              }`}
+              className={`block hover:underline ${h.level === 3 ? "ml-4" : ""} text-[#8b949e]`}
             >
               {h.text}
             </a>
