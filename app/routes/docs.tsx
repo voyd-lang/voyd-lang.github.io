@@ -72,8 +72,8 @@ export default function Docs() {
   };
 
   return (
-    <main className="flex max-w-5xl mx-auto py-16 px-4 gap-8">
-      <aside className="hidden md:block w-64 sticky top-20 h-max">
+    <main className="flex w-full max-w-6xl mx-auto py-16 px-4 gap-8">
+      <aside className="hidden md:block w-64 flex-shrink-0 sticky top-20 h-max">
         <nav className="space-y-2 text-sm">
           {headings.map((h) => (
             <a
@@ -88,7 +88,7 @@ export default function Docs() {
           ))}
         </nav>
       </aside>
-      <div className="flex-1 space-y-8">
+      <div className="flex-1 min-w-0 max-w-3xl space-y-8">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeSlug]}
