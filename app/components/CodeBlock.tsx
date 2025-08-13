@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react";
 import type { FC } from "react";
-import { getHighlighter, type Highlighter } from "shiki";
-import onigWasm from "shiki/onig.wasm?url";
-import voyGrammar from "../../assets/voyd.tmLanguage.json";
+import { createHighlighter, type Highlighter, type LanguageInput } from "shiki";
+import voydGrammar from "../../assets/voyd.tmLanguage.json";
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 function loadHighlighter(): Promise<Highlighter> {
+  console.log(voydGrammar.scopeName);
   if (!highlighterPromise) {
-    highlighterPromise = (getHighlighter as any)({
+    highlighterPromise = createHighlighter({
       themes: ["github-dark"],
       langs: [
         "bash",
         "javascript",
         "typescript",
-        {
-          name: "voyd",
-          scopeName: "source.voyd",
-          grammar: voyGrammar,
-        } as any,
+        "tsx",
+        voydGrammar as unknown as LanguageInput,
       ],
-      wasm: onigWasm,
     });
   }
   return highlighterPromise!;
@@ -38,13 +34,18 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
       const highlighted = h.codeToHtml(code.trim(), {
         lang,
         theme: "github-dark",
+        transformers: [
+          {
+            pre(node) {
+              this.addClassToHast(
+                node,
+                "size-full rounded p-4 overflow-none text-wrap"
+              );
+            },
+          },
+        ],
       });
-      setHtml(
-        highlighted.replace(
-          '<pre class="shiki"',
-          '<pre class="shiki rounded-md p-6 overflow-x-auto shadow w-full"'
-        )
-      );
+      setHtml(highlighted);
     });
   }, [code, lang]);
 
@@ -57,7 +58,7 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <button
         onClick={copy}
-        className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-gray-700 hover:bg-gray-600"
+        className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-gray-700 hover:bg-gray-600 over"
       >
         Copy
       </button>
