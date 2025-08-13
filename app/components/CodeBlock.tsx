@@ -5,7 +5,6 @@ import voydGrammar from "../../assets/voyd.tmLanguage.json";
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 function loadHighlighter(): Promise<Highlighter> {
-  console.log(voydGrammar.scopeName);
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
       themes: ["github-dark"],
@@ -39,7 +38,7 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
             pre(node) {
               this.addClassToHast(
                 node,
-                "size-full rounded p-4 overflow-x-scroll"
+                "not-prose size-full rounded p-4 overflow-x-scroll"
               );
             },
           },

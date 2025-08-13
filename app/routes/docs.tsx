@@ -1,5 +1,5 @@
 import type { Route } from "./+types/docs";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import readme from "../../docs/README.md?raw";
@@ -12,7 +12,10 @@ export const prerender = true;
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Voyd Documentation" },
-    { name: "description", content: "Documentation for the Voyd programming language." },
+    {
+      name: "description",
+      content: "Documentation for the Voyd programming language.",
+    },
   ];
 }
 
@@ -60,23 +63,20 @@ export default function Docs() {
     return () => els.forEach((el) => observer.unobserve(el));
   }, []);
 
-  const components = {
-    code({ node, inline, className, children, ...props }: any) {
+  const components: Components = {
+    code({ className, children }) {
       const match = /language-(\w+)/.exec(className || "");
       const lang = match ? match[1] : "voyd";
-      if (inline) {
-        return (
-          <code className={className} {...props}>
-            {children}
-          </code>
-        );
-      }
+
       return (
         <CodeBlock
           code={String(children).replace(/\n$/, "")}
           lang={lang === "rust" ? "voyd" : lang}
         />
       );
+    },
+    pre({ node: _node, ...props }) {
+      return <pre className="not-prose" {...props} />;
     },
   };
 
@@ -95,11 +95,11 @@ export default function Docs() {
           ))}
         </nav>
       </aside>
-      <div className="flex-1 min-w-0 max-w-3xl space-y-8">
+      <div className="flex-1 min-w-0 max-w-3xl space-y-8 prose prose-invert">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeSlug]}
-          components={components as any}
+          components={components}
         >
           {readme}
         </ReactMarkdown>
@@ -107,7 +107,7 @@ export default function Docs() {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeSlug]}
-          components={components as any}
+          components={components}
         >
           {basics}
         </ReactMarkdown>
