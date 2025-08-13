@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FC } from "react";
 import { getHighlighter, type Highlighter } from "shiki";
+import onigWasm from "shiki/onig.wasm?url";
 import voyGrammar from "../../assets/voyd.tmLanguage.json";
 
 let highlighterPromise: Promise<Highlighter> | null = null;
@@ -18,6 +19,7 @@ function loadHighlighter(): Promise<Highlighter> {
           grammar: voyGrammar,
         } as any,
       ],
+      wasm: onigWasm,
     });
   }
   return highlighterPromise!;
@@ -40,7 +42,7 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
       setHtml(
         highlighted.replace(
           '<pre class="shiki"',
-          '<pre class="shiki rounded-md p-4 overflow-x-auto shadow"'
+          '<pre class="shiki rounded-md p-6 overflow-x-auto shadow w-full"'
         )
       );
     });
@@ -51,7 +53,7 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <button
         onClick={copy}
