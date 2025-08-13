@@ -39,7 +39,7 @@ const CodeBlock: FC<Props> = ({ code, lang = "voyd" }) => {
             pre(node) {
               this.addClassToHast(
                 node,
-                "size-full rounded p-4 overflow-none text-wrap"
+                "size-full rounded p-4 overflow-x-scroll"
               );
             },
           },
