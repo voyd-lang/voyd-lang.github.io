@@ -1,7 +1,10 @@
 import type { Route } from "./+types/home";
 import logo from "../../assets/logo.svg";
-import CodeBlock from "../components/CodeBlock";
 import VoydEditor from "~/components/VoydEditor";
+import { getWasmFn, getWasmInstance } from "voyd";
+import { compileBrowser } from "~/lib/compile-browser";
+import { render } from "voyd/vsx-dom/client";
+import { useRef, useState, type RefObject } from "react";
 
 export const prerender = true;
 
@@ -17,11 +20,28 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const fib = `fn fib(n: i32) -> i32
-  if n < 2 then:
-    n
-  else:
-    fib(n - 1) + fib(n - 2)`;
+  const renderRef = useRef<HTMLDivElement>(null);
+  const fib = `
+use std::vsx::all
+
+fn component()
+  <div>
+    Hello World!
+  </div>
+
+
+fn main(n: i32)
+  msg_pack::encode(component())
+`;
+
+  const onPlay = async (code: string) => {
+    const mod = await compileBrowser(code);
+    const instance = getWasmInstance(mod);
+    if (!renderRef.current) return;
+    render(getWasmFn("main", instance) as unknown as any, renderRef.current, {
+      instance,
+    });
+  };
 
   return (
     <main className="size-full">
@@ -38,7 +58,13 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full max-w-120">
-          <VoydEditor value={fib} />
+          <VoydEditor
+            value={fib}
+            onPlay={(c) => {
+              if (c) onPlay(c);
+            }}
+          />
+          <div ref={renderRef} />
         </div>
       </div>
     </main>
