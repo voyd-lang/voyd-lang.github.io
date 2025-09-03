@@ -62,9 +62,9 @@ export default function Docs() {
 
           nav.querySelectorAll("a").forEach((a) => {
             if (a.getAttribute("href") === `#${id}`) {
-              a.classList.add("text-[#58a6ff]", "font-medium");
+              a.classList.add("text-blue-400", "font-medium");
             } else {
-              a.classList.remove("text-[#58a6ff]", "font-medium");
+              a.classList.remove("text-blue-400", "font-medium");
             }
           });
         }
@@ -101,7 +101,7 @@ export default function Docs() {
               key={h.id}
               href={`#${h.id}`}
               className={[
-                "block hover:underline text-[#8b949e]",
+                "block hover:underline",
                 h.level === 3 ? "ml-4" : "",
               ].join(" ")}
             >
