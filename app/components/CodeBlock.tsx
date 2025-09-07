@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { createHighlighter, type LanguageInput } from "shiki";
 import voydGrammar from "../../assets/voyd.tmLanguage.json";
 
-const highlighter = await createHighlighter({
+export const highlighter = await createHighlighter({
   themes: ["github-dark"],
   langs: [
     "bash",

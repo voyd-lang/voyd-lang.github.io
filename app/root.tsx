@@ -26,19 +26,19 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body>
-        <header className="bg-[#161b22]/80 text-[#c9d1d9] backdrop-blur-sm">
+      <body className="bg-background text-white">
+        <header className="bg-gray-800 backdrop-blur-sm">
           <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
             <a href="/" className="flex items-center gap-2 font-bold text-xl">
               <img src={logo} alt="Voyd logo" className="h-8 w-8" />
-              <span>Voyd</span>
+              <span>voyd</span>
             </a>
             <nav className="flex gap-4">
               <a href="/docs" className="hover:underline text-[#58a6ff]">
