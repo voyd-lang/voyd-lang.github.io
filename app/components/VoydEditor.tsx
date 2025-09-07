@@ -5,7 +5,6 @@ import { Editor } from "@monaco-editor/react";
 
 export interface VoydEditorProps {
   value?: string;
-  placeholder?: string;
   height?: string | number;
   className?: string;
   onChange?: (code: string | undefined) => void;
@@ -14,8 +13,7 @@ export interface VoydEditorProps {
 
 export default function VoydEditor({
   value = "",
-  placeholder,
-  height = 320,
+  height = "100%",
   className,
   onChange,
   onPlay,
@@ -32,7 +30,7 @@ export default function VoydEditor({
   );
 
   return (
-    <div className={"relative w-full " + (className ?? "")}>
+    <div className={"size-full relative " + (className ?? "")}>
       <Editor
         className="size-full"
         height={height}
