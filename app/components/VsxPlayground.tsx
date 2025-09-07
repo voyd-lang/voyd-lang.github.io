@@ -122,8 +122,8 @@ export const VsxPlayground = ({ value }: { value: string }) => {
   };
 
   return (
-    <div className="size-full flex space-x-6">
-      <div className="h-full w-1/2">
+    <div className="size-full flex flex-col md:flex-row gap-6">
+      <div className="h-[260px] md:h-full w-full md:w-1/2 min-w-0">
         <VoydEditor
           value={value}
           isLoading={isCompiling}
@@ -132,7 +132,7 @@ export const VsxPlayground = ({ value }: { value: string }) => {
           }}
         />
       </div>
-      <div className="relative h-full border border-gray-500 rounded w-1/2 overflow-scroll">
+      <div className="relative h-[260px] md:h-full border border-gray-500 rounded w-full md:w-1/2 min-w-0 overflow-auto">
         {stage === "loadingCompiler" ? (
           <div className="absolute top-2 right-2 text-[11px] px-2 py-1 rounded bg-yellow-900/60 text-yellow-100 border border-yellow-700 shadow-sm">
             Loading compiler…

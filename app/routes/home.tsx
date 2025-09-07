@@ -20,8 +20,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <main className="size-full space-y-12">
-      <div className="flex flex-col items-center bg-gray-800 pb-20">
+    <main className="w-full overflow-x-hidden space-y-12">
+      <div className="flex flex-col items-center bg-gray-800 p-4 pb-20">
         <img src={logo} alt="Voyd logo" className="aspect-square w-60" />
         <div className="w-full max-w-2xl space-y-8">
           <div className="w-full space-y-4">
@@ -101,7 +101,7 @@ move(from: from, to: to)
       title="Expressive"
       description="Features including (but not limited to) function overloads, labeled parameters, and universal function call syntax make writing maintainable code easy and fun."
     >
-      <div className="max-w-4xl">
+      <div className="w-4xl max-w-screen">
         <CodeBlock code={code} />
       </div>
     </Section>
@@ -160,7 +160,7 @@ pub fn main()
       title="Built for the web"
       description="voyd includes all the tools you need to build web apps, frontend and backend. Try it out!"
     >
-      <div className="w-full h-[420px]">
+      <div className="w-full md:h-[420px]">
         <VsxPlayground value={vsxCode} />
       </div>
     </Section>

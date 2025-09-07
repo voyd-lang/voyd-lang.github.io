@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background text-white">
+      <body className="bg-background text-white max-w-screen">
         <header className="bg-gray-800 backdrop-blur-sm">
           <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
             <a href="/" className="flex items-center gap-2 font-bold text-xl">
