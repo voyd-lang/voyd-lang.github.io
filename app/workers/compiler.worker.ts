@@ -6,6 +6,9 @@ type Outbound =
   | { id: number; ok: true; tree: any }
   | { id: number; ok: false; error: string };
 
+// Signal readiness so the main thread can queue messages safely
+self.postMessage({ type: "ready" });
+
 self.addEventListener("message", async (event: MessageEvent<Inbound>) => {
   const { id, code } = event.data || {};
   try {

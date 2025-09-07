@@ -5,53 +5,111 @@ import { renderMsgPackNode } from "voyd/vsx-dom/client";
 export const VsxPlayground = ({ value }: { value: string }) => {
   const renderRef = useRef<HTMLDivElement>(null);
   const workerRef = useRef<Worker | null>(null);
+  const workerReadyRef = useRef(false);
+  const readyWaitersRef = useRef<Array<(w: Worker) => void>>([]);
   const [isCompiling, setIsCompiling] = useState(false);
+  const [stage, setStage] = useState<"idle" | "loadingCompiler" | "compiling">(
+    "idle"
+  );
   const reqIdRef = useRef(0);
   const pendingRef = useRef(new Map<number, (payload: any) => void>());
 
   useEffect(() => {
-    // Lazily create the worker on mount
+    // Cleanup on unmount if a worker was created
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+        workerRef.current = null;
+      }
+      pendingRef.current.clear();
+    };
+  }, []);
+
+  const getOrCreateWorker = () => {
+    if (workerRef.current) return workerRef.current;
     const worker = new Worker(
       new URL("../workers/compiler.worker.ts", import.meta.url),
       { type: "module" }
     );
     workerRef.current = worker;
     worker.onmessage = (ev: MessageEvent<any>) => {
-      const { id, ok, tree, error } = ev.data || {};
+      const data = ev.data || {};
+      // Worker ready handshake
+      if (data && data.type === "ready") {
+        workerReadyRef.current = true;
+        const waiters = readyWaitersRef.current;
+        readyWaitersRef.current = [];
+        for (const fn of waiters) fn(worker);
+        return;
+      }
+      const { id, ok, tree, error } = data;
       const resolve = pendingRef.current.get(id);
       if (!resolve) return;
       pendingRef.current.delete(id);
       resolve({ ok, tree, error });
     };
-    return () => {
-      worker.terminate();
+    worker.onerror = (ev: ErrorEvent) => {
+      const err = new Error(ev.message || "Worker error");
+      // Reject all pending requests on fatal worker error
+      for (const [id, resolver] of pendingRef.current.entries()) {
+        resolver({ ok: false, error: err.message });
+        pendingRef.current.delete(id);
+      }
+      try {
+        worker.terminate();
+      } catch {}
       workerRef.current = null;
-      pendingRef.current.clear();
+      workerReadyRef.current = false;
     };
-  }, []);
+    worker.onmessageerror = () => {
+      const err = new Error("Worker message parse error");
+      for (const [id, resolver] of pendingRef.current.entries()) {
+        resolver({ ok: false, error: err.message });
+        pendingRef.current.delete(id);
+      }
+      try {
+        worker.terminate();
+      } catch {}
+      workerRef.current = null;
+      workerReadyRef.current = false;
+    };
+    return worker;
+  };
 
   const compileAndRunInWorker = (code: string) => {
     return new Promise<any>((resolve, reject) => {
-      const worker = workerRef.current;
-      if (!worker) {
-        reject(new Error("Worker not initialized"));
-        return;
-      }
-      const id = ++reqIdRef.current;
-      pendingRef.current.set(id, (payload: any) => {
-        if (payload.ok) resolve(payload.tree);
-        else reject(new Error(payload.error || "Compile failed"));
-      });
-      worker.postMessage({ id, code });
+      const worker = getOrCreateWorker();
+      const send = () => {
+        setStage("compiling");
+        const id = ++reqIdRef.current;
+        let timeout: any = null;
+        const clear = () => {
+          if (timeout) clearTimeout(timeout);
+        };
+        pendingRef.current.set(id, (payload: any) => {
+          clear();
+          if (payload.ok) resolve(payload.tree);
+          else reject(new Error(payload.error || "Compile failed"));
+        });
+        worker.postMessage({ id, code });
+        timeout = setTimeout(() => {
+          if (pendingRef.current.has(id)) {
+            pendingRef.current.delete(id);
+            reject(new Error("Compile timed out. Try again."));
+          }
+        }, 30000);
+      };
+      if (workerReadyRef.current) send();
+      else readyWaitersRef.current.push(() => send());
     });
   };
 
   const onPlay = async (code: string) => {
     try {
       setIsCompiling(true);
+      setStage(workerReadyRef.current ? "compiling" : "loadingCompiler");
       if (!renderRef.current) return;
       const tree = await compileAndRunInWorker(code);
-      console.log(tree);
 
       renderMsgPackNode(tree, renderRef.current);
     } catch (err) {
@@ -59,6 +117,7 @@ export const VsxPlayground = ({ value }: { value: string }) => {
       console.error("Compile error:", err);
     } finally {
       setIsCompiling(false);
+      setStage("idle");
     }
   };
 
@@ -73,7 +132,12 @@ export const VsxPlayground = ({ value }: { value: string }) => {
           }}
         />
       </div>
-      <div className="h-full border border-gray-500 rounded w-1/2 overflow-scroll">
+      <div className="relative h-full border border-gray-500 rounded w-1/2 overflow-scroll">
+        {stage === "loadingCompiler" ? (
+          <div className="absolute top-2 right-2 text-[11px] px-2 py-1 rounded bg-yellow-900/60 text-yellow-100 border border-yellow-700 shadow-sm">
+            Loading compiler…
+          </div>
+        ) : null}
         <div ref={renderRef}>
           <p className="p-8">Hit the play button in the editor to render</p>
         </div>
