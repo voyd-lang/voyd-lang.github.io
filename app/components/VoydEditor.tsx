@@ -9,6 +9,7 @@ export interface VoydEditorProps {
   className?: string;
   onChange?: (code: string | undefined) => void;
   onPlay?: (code: string | undefined) => void;
+  isLoading?: boolean;
 }
 
 export default function VoydEditor({
@@ -17,6 +18,7 @@ export default function VoydEditor({
   className,
   onChange,
   onPlay,
+  isLoading = false,
 }: VoydEditorProps) {
   const [code, setCode] = useState(value);
 
@@ -51,11 +53,21 @@ export default function VoydEditor({
       <button
         type="button"
         onClick={play}
-        className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-[#21262d] text-[#c9d1d9] hover:bg-[#30363d]"
-        aria-label="Play"
-        title="Play"
+        disabled={isLoading}
+        aria-busy={isLoading}
+        className="absolute bottom-2 right-2 inline-flex items-center gap-2 text-sm px-3 py-2 rounded-md bg-[#21262d] text-[#c9d1d9] hover:bg-[#30363d] disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+        aria-label={isLoading ? "Compiling" : "Play"}
+        title={isLoading ? "Compiling" : "Play"}
       >
-        ▶︎ Play
+        {isLoading ? (
+          <span
+            aria-hidden
+            className="inline-block size-4 border-2 border-green-400 border-t-transparent rounded-full animate-spin"
+          />
+        ) : (
+          <span aria-hidden className="text-green-400">▶︎</span>
+        )}
+        <span>{isLoading ? "Compiling…" : "Play"}</span>
       </button>
     </div>
   );
